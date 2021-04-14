@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask
-from conduit.extensions import bcrypt, cache, db, migrate, cors
-
+from conduit.extensions import bcrypt, cache, db, migrate, jwt, cors
+#from conduit.extensions import bcrypt, cache, db, migrate, cors
 from conduit import commands, user, profile, articles
 from conduit.settings import ProdConfig
 from conduit.exceptions import InvalidUsage
@@ -31,15 +31,15 @@ def register_extensions(app):
     cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
-    # jwt.init_app(app)
+    jwt.init_app(app)
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
     origins = app.config.get('CORS_ORIGIN_WHITELIST', '*')
-    cors.init_app(user.views.blueprint, origins=origins)
-    cors.init_app(profile.views.blueprint, origins=origins)
-    cors.init_app(articles.views.blueprint, origins=origins)
+    cors.init_app(user.views.blueprint, origins=origins, add_specs=False)
+    cors.init_app(profile.views.blueprint, origins=origins, add_specs=False)
+    cors.init_app(articles.views.blueprint, origins=origins, add_specs=False)
 
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(profile.views.blueprint)
